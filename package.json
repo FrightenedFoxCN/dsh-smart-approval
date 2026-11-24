@@ -1,0 +1,23 @@
+{
+  "name": "dsh-smart-approval",
+  "version": "0.2.1",
+  "private": true,
+  "type": "module",
+  "description": "Smart Auto: context-aware approval reviewer for DeepSeek Harness. Workspace-write sandbox, AI review only on sandbox escalation, with precedent memory learned from human decisions.",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "license": "MIT"
+}

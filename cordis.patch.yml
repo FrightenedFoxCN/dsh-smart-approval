@@ -1,0 +1,50 @@
+# dsh-smart-approval bundle patch.
+#
+# Two parts:
+# 1. Insert this plugin's row.
+# 2. Restate the permission preset table so `smart-auto` exists. An id-targeted
+#    override replaces the whole `presets` map, so every preset this deployment
+#    should keep is restated here (workspace-write / sandboxed-auto /
+#    danger-full-access / read-only).
+- insert:
+    - id: smart-approval
+      name: dsh-smart-approval
+      config:
+        presetName: smart-auto
+        provider: deepseek-account
+        model: deepseek-flash
+        timeoutMs: 20000
+        maxInputTokens: 6000
+        cacheTtlMs: 28800000
+        precedentsDir: ~/.dsh/smart-approval/precedents
+        precedentsEnabled: true
+        distillOnHumanDecision: true
+        maxPrecedentLines: 200
+        ledger: true
+        ledgerPath: ~/.dsh/smart-approval/ledger.jsonl
+        maxLedgerLines: 500
+        reportCommand: smart-report
+        debugLog: ''
+
+- id: permission
+  config:
+    presets:
+      read-only:
+        sandbox: read-only
+        approval: ask
+      workspace-write:
+        sandbox: workspace-write
+        approval: ask
+      sandboxed-auto:
+        sandbox: workspace-write
+        approval: ask
+        name: Sandboxed Auto
+        description: 保留工作区沙箱；例行升级由分类器一次性批准，危险或不确定时询问。
+      smart-auto:
+        sandbox: workspace-write
+        approval: ask
+        name: Smart Auto
+        description: 保留工作区沙箱；仅沙箱升级时评审，参考历史人工决定与先例。Keeps the workspace sandbox; reviews only sandbox escalations, reusing prior human decisions as precedents.
+      danger-full-access:
+        sandbox: danger-full-access
+        approval: never
